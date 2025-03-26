@@ -18,11 +18,18 @@ let backspaceButton;           // button for backspace / remove oscillator
 const placeholder = "<n>";
 
 function setup() {
-  createCanvas(300, 400);
+  let canvasWidth = 300;
+  let canvasHeight = 475;
+  let canvas = createCanvas(canvasWidth, canvasHeight);
+  // Center the canvas by positioning it at ( (windowWidth - canvasWidth)/2, (windowHeight - canvasHeight)/2 )
+  canvas.position((windowWidth - canvasWidth) / 2, (windowHeight - canvasHeight) / 2);
+
+
   textAlign(CENTER, CENTER);
   textSize(20);
 
   let labels = [
+    "2nd", "play", "Wave", "Del",
     "7", "8", "9", "/",
     "4", "5", "6", "*",
     "1", "2", "3", "-",
@@ -34,32 +41,16 @@ function setup() {
     buttons.push(new Button(x, y, 75, 75, labels[i]));
   }
 
-  let secondButton = createButton('2nd');
-  secondButton.position(350, 220);
-  secondButton.mousePressed(toggleSecondary);
-
-  let playButton = createButton('play');
-  playButton.position(350, 250);
-  playButton.mousePressed(play);
-  playButton.mouseReleased(stopNote);
-
-  waveButton = createButton('Wave: ' + currentWaveform);
-  waveButton.position(350, 310);
-  waveButton.mousePressed(toggleWaveform);
-
-  backspaceButton = createButton('⌫<br><span style="font-size:10px;">rm osc</span>');
-  backspaceButton.position(350, 340);
-  backspaceButton.mousePressed(handleBackspace);
-
-  myImg = createImg('/static/just_intonation.png', 'just intonation');
-  myImg.position(620, 10);
+  // myImg = createImg('static/just_intonation.png', 'just intonation');
+  // myImg.position(1000, 10);
+  // myImg.size(200, 300);
 }
 
 function draw() {
   background(200);
 
   fill(255);
-  rect(0, 0, width, 100);
+  rect(0, 0, width, 150);
   fill(0);
   textSize(30);
 
@@ -79,7 +70,28 @@ function mousePressed() {
   }
 }
 
+function mouseReleased() {
+  if (buttons[1].contains(mouseX, mouseY)) {
+    stopNote();
+  }
+}
+
 function handleInput(label) {
+  if (label === '2nd') {
+    toggleSecondary();
+    return;
+  } else if (label === 'play') {
+    play();
+    return;
+  } else if (label === 'Wave') {
+    toggleWaveform();
+    return;
+  } else if (label === 'Del') {
+    handleBackspace();
+    return;
+  }
+
+
   if (secondaryMode) {
     if (label === '+') {
       insertCentsFormula();  // secondary function of '+' : insert cents formula for raising frequency
@@ -289,7 +301,7 @@ class Button {
 
 function stopNote() {
   for (let i = 0; i < oscillators.length; i++) {
-    oscillators[i].amp(0, 0.01);
+    oscillators[i].amp(0, 0.5);
     oscillators[i].stop();
   }
 }
