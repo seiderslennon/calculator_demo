@@ -2,8 +2,7 @@ let overlaySketch = function(p) {
   let buttons = [];
   let buttonSize = 70;
   let screenDivide = 160;
-  let nameInput;
-
+  let screen = new Screen(p, 340, 80, 50, "");
 
   p.setup = function() {
     let canvas = p.createCanvas(375, 550);
@@ -25,32 +24,32 @@ let overlaySketch = function(p) {
     let col2 = 3*(marginX)+((5*buttonSize)/2);
     let col3 = 4*(marginX)+((7*buttonSize)/2);
 
-    buttons.push(new Button(p, col0, row0, buttonSize, "play"));
+    buttons.push(new Button(p, col0, row0, buttonSize, "2nd"));
     buttons.push(new Button(p, col1, row0, buttonSize, "sin"));
-    buttons.push(new Button(p, col2, row0, buttonSize, "bcksp"));
-    buttons.push(new Button(p, col3, row0, buttonSize, "2nd"));
+    buttons.push(new Button(p, col2, row0, buttonSize, "C", p.clear));
+    buttons.push(new Button(p, col3, row0, buttonSize, "▶︎"));
 
-    buttons.push(new Button(p, col0, row1, buttonSize, "7"));
-    buttons.push(new Button(p, col1, row1, buttonSize, "8"));
-    buttons.push(new Button(p, col2, row1, buttonSize, "9"));
-    buttons.push(new Button(p, col3, row1, buttonSize, "/"));
+    buttons.push(new Button(p, col0, row1, buttonSize, "7", p.seven));
+    buttons.push(new Button(p, col1, row1, buttonSize, "8", p.eight));
+    buttons.push(new Button(p, col2, row1, buttonSize, "9", p.nine));
+    buttons.push(new Button(p, col3, row1, buttonSize, "/", p.divide));
 
-    buttons.push(new Button(p, col0, row2, buttonSize, "4"));
-    buttons.push(new Button(p, col1, row2, buttonSize, "5"));
-    buttons.push(new Button(p, col2, row2, buttonSize, "6"));
-    buttons.push(new Button(p, col3, row2, buttonSize, "*"));
+    buttons.push(new Button(p, col0, row2, buttonSize, "4", p.four));
+    buttons.push(new Button(p, col1, row2, buttonSize, "5", p.five));
+    buttons.push(new Button(p, col2, row2, buttonSize, "6", p.six));
+    buttons.push(new Button(p, col3, row2, buttonSize, "*", p.multiply));
   
-    buttons.push(new Button(p, col0, row3, buttonSize, "1"));
-    buttons.push(new Button(p, col1, row3, buttonSize, "2"));
-    buttons.push(new Button(p, col2, row3, buttonSize, "3"));
-    buttons.push(new Button(p, col3, row3, buttonSize, "-"));
+    buttons.push(new Button(p, col0, row3, buttonSize, "1", p.one));
+    buttons.push(new Button(p, col1, row3, buttonSize, "2", p.two));
+    buttons.push(new Button(p, col2, row3, buttonSize, "3", p.three));
+    buttons.push(new Button(p, col3, row3, buttonSize, "-", p.minus));
 
-    buttons.push(new Button(p, col0, row4, buttonSize, "C"));
-    buttons.push(new Button(p, col1, row4, buttonSize, "0"));
+    buttons.push(new Button(p, col0, row4, buttonSize, ".", p.decimal));
+    buttons.push(new Button(p, col1, row4, buttonSize, "0", p.zero));
     buttons.push(new Button(p, col2, row4, buttonSize, "="));
-    buttons.push(new Button(p, col3, row4, buttonSize, "+"));
+    buttons.push(new Button(p, col3, row4, buttonSize, "+", p.plus));
 
-    
+
   };
 
   p.draw = function() {
@@ -69,7 +68,89 @@ let overlaySketch = function(p) {
     for (let btn of buttons) {
       btn.display();
     }
+
+    p.fill(0,0,0);
+    screen.display();
   };
+
+  p.mousePressed = function() {
+    for (let btn of buttons) {
+      if (btn.isMouseInside()) {
+        btn.activate();
+      }
+    }
+  };
+
+  p.keyPressed = function() {
+    for (let btn of buttons) {
+      if (p.key === btn.label) {
+        btn.activate();
+      }
+    }
+  }
+
+  p.parseEquation = function(equation) {
+    // go though screen text and evaluate
+    // return the result
+  }
+
+  p.equals = function() {
+    result = p.parseEquation(screen.text);
+    // add to oscillators
+    screen.text = result;
+  }
+
+
+  p.clear = function() {
+    screen.text = "";
+    // addd more for clearing oscs
+  }
+
+  p.plus = function() {
+    screen.text += "+";
+  }
+  p.minus = function() {
+    screen.text += "-";
+  }
+  p.multiply = function() {
+    screen.text += "*";
+  }
+  p.divide = function() {
+    screen.text += "/";
+  }
+  p.decimal = function() {
+    screen.text += ".";
+  }
+  p.zero = function() {
+    screen.text += "0";
+  }
+  p.one = function() {
+    screen.text += "1";
+  }
+  p.two = function() {
+    screen.text += "2";
+  }
+  p.three = function() {
+    screen.text += "3";
+  }
+  p.four = function() {
+    screen.text += "4";
+  }
+  p.five = function() {
+    screen.text += "5";
+  }
+  p.six = function() {
+    screen.text += "6";
+  }
+  p.seven = function() {
+    screen.text += "7";
+  }
+  p.eight = function() {
+    screen.text += "8";
+  }
+  p.nine = function() {
+    screen.text += "9";
+  }
 
   p.windowResized = function() {
     let canvas = document.getElementById("overlay-canvas");

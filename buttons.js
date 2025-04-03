@@ -1,11 +1,12 @@
 // Button.js
 class Button {
-    constructor(p, x, y, size, label) {
+    constructor(p, x, y, size, label, callback) {
       this.p = p;
       this.x = x;       // center x coordinate
       this.y = y;       // center y coordinate
       this.size = size;
       this.label = label;
+      this.callback = callback; // Optional callback function
     }
     
     display() {
@@ -35,7 +36,27 @@ class Button {
     activate() {
       console.log("Button " + this.label + " activated!");
       // Additional functionality can be added here
+      if (this.callback) {
+        this.callback(); // Call the callback function
+      }
     }
   }
+
+class Screen {
+    constructor(p, x, y, size, text) {
+        this.p = p;
+        this.x = x;       // center x coordinate
+        this.y = y;       // center y coordinate
+        this.size = size;
+        this.text = text;
+    }
+
+    display() {
+        this.p.fill(0);
+        this.p.textAlign(this.p.RIGHT);
+        this.p.textSize(this.size);
+        this.p.text(this.text, this.x, this.y);
+    }
+}
 
   
