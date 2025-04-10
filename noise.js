@@ -10,43 +10,29 @@ let backgroundSketch = function(p) {
 
     p.setup = function() {
         p.createCanvas(p.windowWidth, p.windowHeight);
-        // Draw the grid
-        dotGrid();
+        p.dotGrid();  // Use the exposed function to draw the grid initially
     };
 
-    // function checkChanged() {
-    //   if (gap !== ) {
-    //     dotGrid();
-    //   }
-    //   if (xScale !== ) {
-    //     dotGrid();
-    //   }
-    //   if (yScale !== ) {
-    //     dotGrid();
-    //   }
-    // }
-
-    function dotGrid() {
+    // Exposed method: now dotGrid is accessible externally as p.dotGrid
+    p.dotGrid = function() {
         p.background(255);
         p.noStroke();
         p.fill(0);
-
-        // Get the current gap and offset values from the sliders
-        gap = 4;
-        //   xScale = ;
-        //   yScale = ;
-        // Loop through x and y coordinates, at increments set by gap
+        gap = 4; // Alternatively, read from a slider or control
+        
         for (let x = gap / 2; x < p.width; x += gap) {
             for (let y = gap / 2; y < p.height; y += gap) {
-                // Calculate noise value using scaled and offset coordinates
-                let noiseValue = p.noise((x) * xScale, (y) * yScale);
-                // Since noiseValue will be 0-1, multiply it by gap to set diameter to
-                // between 0 and the size of the gap between circles
+                let noiseValue = p.noise(x * xScale, y * yScale);
                 let diameter = noiseValue * gap;
                 p.circle(x, y, diameter);
             }
         }
-    }
+    };
+};
 
+// Create and store the instance in a global variable
+let myBackground = new p5(backgroundSketch);
+
+function resetTheGrid() {
+    myBackground.dotGrid(); // This resets/redraws the grid
 }
-new p5(backgroundSketch);

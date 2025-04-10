@@ -1,8 +1,22 @@
+if (!window.p5 || !p5.prototype.hasOwnProperty('soundOut')) {
+  const soundScript = document.createElement("script");
+  soundScript.src = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/addons/p5.sound.min.js";
+  soundScript.onload = () => {
+    console.log("p5.sound loaded successfully");
+    // Optionally, call an initialization function here
+  };
+  document.head.appendChild(soundScript);
+}
+
 let overlaySketch = function(p) {
   let buttons = [];
   let buttonSize = 70;
   let screenDivide = 160;
   let screen = new Screen(p, 340, 80, 50, "");
+  let second = false;
+  let mySound = new Sound();
+  let isPlayActive = false;
+  
 
   p.setup = function() {
     let canvas = p.createCanvas(375, 550);
@@ -24,10 +38,10 @@ let overlaySketch = function(p) {
     let col2 = 3*(marginX)+((5*buttonSize)/2);
     let col3 = 4*(marginX)+((7*buttonSize)/2);
 
-    buttons.push(new Button(p, col0, row0, buttonSize, "2nd"));
-    buttons.push(new Button(p, col1, row0, buttonSize, "sin"));
+    buttons.push(new Button(p, col0, row0, buttonSize, "2nd", p.second));
+    buttons.push(new Button(p, col1, row0, buttonSize, "sin", p.play));
     buttons.push(new Button(p, col2, row0, buttonSize, "C", p.clear));
-    buttons.push(new Button(p, col3, row0, buttonSize, "▶︎"));
+    buttons.push(new Button(p, col3, row0, buttonSize, "▶︎", p.play));
 
     buttons.push(new Button(p, col0, row1, buttonSize, "7", p.seven));
     buttons.push(new Button(p, col1, row1, buttonSize, "8", p.eight));
@@ -46,19 +60,15 @@ let overlaySketch = function(p) {
 
     buttons.push(new Button(p, col0, row4, buttonSize, ".", p.decimal));
     buttons.push(new Button(p, col1, row4, buttonSize, "0", p.zero));
-    buttons.push(new Button(p, col2, row4, buttonSize, "="));
+    buttons.push(new Button(p, col2, row4, buttonSize, "=", p.equals));
     buttons.push(new Button(p, col3, row4, buttonSize, "+", p.plus));
 
-
+    let osc = new p5.Oscillator('sine', 440);
   };
 
   p.draw = function() {
-    // Fill the entire overlay canvas with an opaque background color.
-    // For example, a solid black background:
-    p.background(0); // Use any opaque color you prefer
-
-    // Now, draw your overlay content on top:
-    p.fill(255, 80, 80); // Example fill color
+    p.background(0);
+    p.fill(255, 80, 80);
     p.noStroke();
     p.rect(0, 0, p.width, p.height);
     
@@ -81,28 +91,57 @@ let overlaySketch = function(p) {
     }
   };
 
+  p.mouseReleased = function() {
+    if (isPlayActive) {
+      isPlayActive = false;
+      mySound.stopAll();
+    }
+  };
+
+
+p.keyReleased = function() {
+  if (p.key === "▶︎" || p.key === " ") { // adjust the key check as needed
+    mySound.stopAll();
+    isPlayActive = false;
+  }
+};
+
   p.keyPressed = function() {
+    let activeKey = p.key;
+    if (activeKey === "Enter" || activeKey === "Return") {
+      activeKey = "=";
+    }
+    
     for (let btn of buttons) {
-      if (p.key === btn.label) {
+      if (activeKey === btn.label) {
         btn.activate();
       }
     }
   }
 
-  p.parseEquation = function(equation) {
-    // go though screen text and evaluate
-    // return the result
+  p.play = function() {
+    mySound.playAll();
+    isPlayActive = true;
   }
 
   p.equals = function() {
-    result = p.parseEquation(screen.text);
-    // add to oscillators
-    screen.text = result;
+    result = screen.evaluate();
+    let osc1 = new p5.Oscillator('sine');
+    osc1.freq(result);
+    mySound.addOscillator(osc1);
   }
 
+  p.second = function() {
+    second = !second;
+  }
 
   p.clear = function() {
     screen.text = "";
+    if (second) {
+      mySound.clearOscillators();
+      second = false;
+    }
+
     // addd more for clearing oscs
   }
 
