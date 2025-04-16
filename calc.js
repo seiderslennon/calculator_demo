@@ -1,12 +1,12 @@
-if (!window.p5 || !p5.prototype.hasOwnProperty('soundOut')) {
-  const soundScript = document.createElement("script");
-  soundScript.src = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/addons/p5.sound.min.js";
-  soundScript.onload = () => {
-    console.log("p5.sound loaded successfully");
-    // Optionally, call an initialization function here
-  };
-  document.head.appendChild(soundScript);
-}
+// if (!window.p5 || !p5.prototype.hasOwnProperty('soundOut')) {
+//   const soundScript = document.createElement("script");
+//   soundScript.src = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/addons/p5.sound.min.js";
+//   soundScript.onload = () => {
+//     console.log("p5.sound loaded successfully");
+//     // Optionally, call an initialization function here
+//   };
+//   document.head.appendChild(soundScript);
+// }
 
 let overlaySketch = function(p) {
   let buttons = [];
@@ -16,7 +16,6 @@ let overlaySketch = function(p) {
   let second = false;
   let mySound = new Sound();
   let isPlayActive = false;
-  
 
   p.setup = function() {
     let canvas = p.createCanvas(375, 550);
@@ -62,8 +61,6 @@ let overlaySketch = function(p) {
     buttons.push(new Button(p, col1, row4, buttonSize, "0", p.zero));
     buttons.push(new Button(p, col2, row4, buttonSize, "=", p.equals));
     buttons.push(new Button(p, col3, row4, buttonSize, "+", p.plus));
-
-    let osc = new p5.Oscillator('sine', 440);
   };
 
   p.draw = function() {
@@ -84,6 +81,7 @@ let overlaySketch = function(p) {
   };
 
   p.mousePressed = function() {
+    p.userStartAudio();
     for (let btn of buttons) {
       if (btn.isMouseInside()) {
         btn.activate();
@@ -99,19 +97,22 @@ let overlaySketch = function(p) {
   };
 
 
-p.keyReleased = function() {
-  if (p.key === "▶︎" || p.key === " ") { // adjust the key check as needed
-    mySound.stopAll();
-    isPlayActive = false;
-  }
-};
+  p.keyReleased = function() {
+    if (p.key === "▶︎" || p.key === " ") { // adjust the key check as needed
+      mySound.stopAll();
+      isPlayActive = false;
+    }
+  };
 
   p.keyPressed = function() {
+    p.userStartAudio();
     let activeKey = p.key;
     if (activeKey === "Enter" || activeKey === "Return") {
       activeKey = "=";
     }
-    
+    if (activeKey === " ") {
+      activeKey = "▶︎";
+    }
     for (let btn of buttons) {
       if (activeKey === btn.label) {
         btn.activate();
@@ -126,9 +127,9 @@ p.keyReleased = function() {
 
   p.equals = function() {
     result = screen.evaluate();
-    let osc1 = new p5.Oscillator('sine');
-    osc1.freq(result);
-    mySound.addOscillator(osc1);
+    // let osc1 = new p5.Oscillator('sine');
+    // osc1.freq(result);
+    mySound.addOscillator(result);
   }
 
   p.second = function() {
@@ -199,3 +200,33 @@ p.keyReleased = function() {
 };
 
 new p5(overlaySketch);
+
+let backgroundSketch = function(p) {
+  let xScale = 0.015;
+  let yScale = 0.02;
+  let gap;
+
+  p.setup = function() {
+      p.createCanvas(p.windowWidth, p.windowHeight);
+      p.dotGrid();  // Use the exposed function to draw the grid initially
+  };
+
+  // Exposed method: now dotGrid is accessible externally as p.dotGrid
+  p.dotGrid = function() {
+      p.background(255);
+      p.noStroke();
+      p.fill(0);
+      gap = 4; // Alternatively, read from a slider or control
+      
+      for (let x = gap / 2; x < p.width; x += gap) {
+          for (let y = gap / 2; y < p.height; y += gap) {
+              let noiseValue = p.noise(x * xScale, y * yScale);
+              let diameter = noiseValue * gap;
+              p.circle(x, y, diameter);
+          }
+      }
+  };
+};
+
+
+let myBackground = new p5(backgroundSketch);

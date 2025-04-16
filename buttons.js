@@ -1,13 +1,13 @@
 // Button.js
-if (!window.p5 || !p5.prototype.hasOwnProperty('soundOut')) {
-  const soundScript = document.createElement("script");
-  soundScript.src = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/addons/p5.sound.min.js";
-  soundScript.onload = () => {
-    console.log("p5.sound loaded successfully");
-    // Optionally, call an initialization function here
-  };
-  document.head.appendChild(soundScript);
-}
+// if (!window.p5 || !p5.prototype.hasOwnProperty('soundOut')) {
+//   const soundScript = document.createElement("script");
+//   soundScript.src = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/addons/p5.sound.min.js";
+//   soundScript.onload = () => {
+//     console.log("p5.sound loaded successfully");
+//     // Optionally, call an initialization function here
+//   };
+//   document.head.appendChild(soundScript);
+// }
 
 class Button {
     constructor(p, x, y, size, label, callback) {
@@ -92,31 +92,37 @@ class Screen {
 class Sound {
   constructor() {
     this.oscillators = [];
+    this.env = new p5.Envelope();
+    this.env.setADSR(0.015, 1, 1, 0.01);
   }
 
-  addOscillator(osc) {
+  addOscillator(freq) {
+    let osc = new p5.Oscillator('sine');
+    osc.freq(freq);
+    osc.amp(0);
+    osc.start();
     this.oscillators.push(osc);
-    console.log("Oscillator added");
   }
 
   clearOscillators() {
     this.stopAll();
+    for (let osc of this.oscillators) {
+      osc.stop();
+    }
     this.oscillators = [];
-    console.log("Oscillators cleared");
   }
+
   playAll() {
-    console.log("Playing all oscillators");
-    this.oscillators.forEach(osc => {
-      osc.start();
-    });
+    for (let osc of this.oscillators) {
+      this.env.triggerAttack(osc);
+    }
   }
 
   stopAll() {
-    this.oscillators.forEach(osc => {
-      osc.stop();
-    });
+    for (let osc of this.oscillators) {
+      this.env.triggerRelease(osc);
+    }
   }
 }
-
 
   
