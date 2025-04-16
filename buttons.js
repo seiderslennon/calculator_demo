@@ -1,56 +1,53 @@
-// Button.js
-// if (!window.p5 || !p5.prototype.hasOwnProperty('soundOut')) {
-//   const soundScript = document.createElement("script");
-//   soundScript.src = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/addons/p5.sound.min.js";
-//   soundScript.onload = () => {
-//     console.log("p5.sound loaded successfully");
-//     // Optionally, call an initialization function here
-//   };
-//   document.head.appendChild(soundScript);
-// }
-
 class Button {
-    constructor(p, x, y, size, label, callback) {
-      this.p = p;
-      this.x = x;       // center x coordinate
-      this.y = y;       // center y coordinate
-      this.size = size;
-      this.label = label;
-      this.callback = callback; // Optional callback function
-    }
+  constructor(p, x, y, size, label, callback) {
+    this.p = p;
+    this.x = x;       // center x coordinate
+    this.y = y;       // center y coordinate
+    this.size = size;
+    this.label = label;
+    this.callback = callback; // Optional callback function
+    // Default button color (optional)
+    this.buttonColor = 200;
+  }
+  
+  display() {
+    // Use the updated buttonColor property if available
+    this.p.fill(this.buttonColor);
+    this.p.stroke(0);
+    // Draw from top-left relative to the center
+    this.p.rect(this.x - this.size / 2, this.y - this.size / 2, this.size, this.size);
     
-    display() {
-      // Draw the square with the center as (this.x, this.y)
-      this.p.fill(200);
-      this.p.stroke(0);
-      // Draw from top-left relative to the center
-      this.p.rect(this.x - this.size / 2, this.y - this.size / 2, this.size, this.size);
-      
-      // Draw the label centered in the button
-      this.p.fill(0);
-      this.p.textAlign(this.p.CENTER, this.p.CENTER);
-      this.p.textSize(20);
-      this.p.text(this.label, this.x, this.y);
-    }
+    // Draw the label centered in the button
+    this.p.fill(0);
+    this.p.textAlign(this.p.CENTER, this.p.CENTER);
+    this.p.textSize(20);
+    this.p.text(this.label, this.x, this.y);
+  }
 
-    isMouseInside() {
-      // Check if the mouse is within the bounds of the square button
-      return (
-        this.p.mouseX >= this.x - this.size / 2 &&
-        this.p.mouseX <= this.x + this.size / 2 &&
-        this.p.mouseY >= this.y - this.size / 2 &&
-        this.p.mouseY <= this.y + this.size / 2
-      );
-    }
-    
-    activate() {
-      console.log("Button " + this.label + " activated!");
-      // Additional functionality can be added here
-      if (this.callback) {
-        this.callback(); // Call the callback function
-      }
+  updateColor(color) {
+    // Update the button's color by setting the buttonColor property to the new color value.
+    this.buttonColor = color;
+  }
+
+  isMouseInside() {
+    // Check if the mouse is within the bounds of the square button
+    return (
+      this.p.mouseX >= this.x - this.size / 2 &&
+      this.p.mouseX <= this.x + this.size / 2 &&
+      this.p.mouseY >= this.y - this.size / 2 &&
+      this.p.mouseY <= this.y + this.size / 2
+    );
+  }
+  
+  activate() {
+    console.log("Button " + this.label + " activated!");
+    // Additional functionality can be added here
+    if (this.callback) {
+      this.callback(); // Call the callback function
     }
   }
+}
+
 
 class Screen {
   constructor(p, x, y, size, text) {
@@ -67,8 +64,6 @@ class Screen {
       this.p.textSize(this.size);
       this.p.text(this.text, this.x, this.y);
   }
-
-
 
   evaluate() {
     const validPattern = /^[0-9+\-*/. ()]+$/;

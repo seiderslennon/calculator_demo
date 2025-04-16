@@ -1,21 +1,19 @@
-// if (!window.p5 || !p5.prototype.hasOwnProperty('soundOut')) {
-//   const soundScript = document.createElement("script");
-//   soundScript.src = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/addons/p5.sound.min.js";
-//   soundScript.onload = () => {
-//     console.log("p5.sound loaded successfully");
-//     // Optionally, call an initialization function here
-//   };
-//   document.head.appendChild(soundScript);
-// }
-
 let overlaySketch = function(p) {
   let buttons = [];
   let buttonSize = 70;
   let screenDivide = 160;
   let screen = new Screen(p, 340, 80, 50, "");
   let second = false;
-  let mySound = new Sound();
   let isPlayActive = false;
+  let playAllMode = false;
+  let defaultButtonColor = 200;
+  let activeButtonColor = 165;
+
+  let targetSound = 0;
+  let sounds = [];
+  for (let i = 0; i < 9; i++) {
+    sounds.push(new Sound());
+  }
 
   p.setup = function() {
     let canvas = p.createCanvas(375, 550);
@@ -90,17 +88,29 @@ let overlaySketch = function(p) {
   };
 
   p.mouseReleased = function() {
-    if (isPlayActive) {
+    if (isPlayActive && !playAllMode) {
       isPlayActive = false;
-      mySound.stopAll();
+      sounds[targetSound].stopAll();
+    }
+    if (playAllMode) {
+      for (let btn of buttons) {
+        if (btn.isMouseInside()) {
+          sounds[Number(btn.label)-1].stopAll();
+        }
+      }
     }
   };
 
 
   p.keyReleased = function() {
     if (p.key === "▶︎" || p.key === " ") { // adjust the key check as needed
-      mySound.stopAll();
+      sounds[targetSound].stopAll();
       isPlayActive = false;
+    }
+    if (playAllMode) {
+      if (p.key > 0 && p.key < 10) {
+        sounds[Number(p.key)-1].stopAll();
+      }
     }
   };
 
@@ -121,29 +131,51 @@ let overlaySketch = function(p) {
   }
 
   p.play = function() {
-    mySound.playAll();
-    isPlayActive = true;
+    if (second) {
+      playAllMode = true;
+      second = false;
+      for (let btn of buttons) {
+        if (btn.label === "▶︎") {
+          btn.updateColor(activeButtonColor);
+        }
+      }
+    }
+    else {
+      playAllMode = false;
+      for (let btn of buttons) {
+        if (btn.label === "▶︎") {
+          btn.updateColor(defaultButtonColor);
+        }
+      }
+      sounds[targetSound].playAll();
+      isPlayActive = true;
+    }
+    
   }
 
   p.equals = function() {
     result = screen.evaluate();
-    // let osc1 = new p5.Oscillator('sine');
-    // osc1.freq(result);
-    mySound.addOscillator(result);
+    sounds[targetSound].addOscillator(result);
   }
+
 
   p.second = function() {
     second = !second;
+    if (playAllMode) {second = false;}
+    playAllMode = false;
+    for (let btn of buttons) {
+      if (btn.label === "▶︎") {
+        btn.updateColor(defaultButtonColor);
+      }
+    }
   }
 
   p.clear = function() {
     screen.text = "";
     if (second) {
-      mySound.clearOscillators();
+      sounds[targetSound].clearOscillators();
       second = false;
     }
-
-    // addd more for clearing oscs
   }
 
   p.plus = function() {
@@ -165,31 +197,94 @@ let overlaySketch = function(p) {
     screen.text += "0";
   }
   p.one = function() {
-    screen.text += "1";
+    if (second) {
+      targetSound = 0;
+      second = false;
+    }
+    else if (playAllMode) {
+      sounds[0].playAll();
+    }
+    else {screen.text += "1";}
   }
   p.two = function() {
-    screen.text += "2";
+    if (second) {
+      targetSound = 1;
+      second = false;
+    }
+    else if (playAllMode) {
+      sounds[1].playAll();
+    }
+    else {screen.text += "2";}
   }
   p.three = function() {
-    screen.text += "3";
+    if (second) {
+      targetSound = 2;
+      second = false;
+    }
+    else if (playAllMode) {
+      sounds[2].playAll();
+    }
+    else {screen.text += "3";}
   }
   p.four = function() {
-    screen.text += "4";
+    if (second) {
+      targetSound = 3;
+      second = false;
+    }
+    else if (playAllMode) {
+      sounds[3].playAll();
+    }
+    else {screen.text += "4";}
   }
   p.five = function() {
-    screen.text += "5";
+    if (second) {
+      targetSound = 4;
+      second = false;
+    }
+    else if (playAllMode) {
+      sounds[4].playAll();
+    }
+    else {screen.text += "5";}
   }
   p.six = function() {
-    screen.text += "6";
+    if (second) {
+      targetSound = 5;
+      second = false;
+    }
+    else if (playAllMode) {
+      sounds[5].playAll();
+    }
+    else {screen.text += "6";}
   }
   p.seven = function() {
-    screen.text += "7";
+    if (second) {
+      targetSound = 6;
+      second = false;
+    }
+    else if (playAllMode) {
+      sounds[6].playAll();
+    }
+    else {screen.text += "7";}
   }
   p.eight = function() {
-    screen.text += "8";
+    if (second) {
+      targetSound = 7;
+      second = false;
+    }
+    else if (playAllMode) {
+      sounds[7].playAll();
+    }
+    else {screen.text += "8";}
   }
   p.nine = function() {
-    screen.text += "9";
+    if (second) {
+      targetSound = 8;
+      second = false;
+    }
+    else if (playAllMode) {
+      sounds[8].playAll();
+    }
+    else {screen.text += "9";}
   }
 
   p.windowResized = function() {
@@ -197,7 +292,10 @@ let overlaySketch = function(p) {
     canvas.style.left = (window.innerWidth - p.width) / 2 + 'px';
     canvas.style.top = (window.innerHeight - p.height) / 2 + 'px';
   };
+
 };
+
+
 
 new p5(overlaySketch);
 
