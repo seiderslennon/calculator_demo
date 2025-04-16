@@ -17,6 +17,9 @@ let activeButtonColor = 165;
 let targetSound = 0;
 let sounds = [];
 
+let showHelp = false;
+let helpButton;
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   calcX = (windowWidth - calcWidth) / 2;
@@ -66,6 +69,20 @@ function setup() {
   for (let i = 0; i < 9; i++) {
     sounds.push(new Sound());
   }
+
+  helpButton = createButton('?');
+  helpButton.position(windowWidth - 30, 10);
+  helpButton.style('font-size', '23px');
+  helpButton.style('padding', '0');             // no extra space around the glyph
+  helpButton.style('background', 'transparent'); // no background
+  helpButton.style('border', 'none');            // no border
+  helpButton.style('outline', 'none');           // no focus outline
+  helpButton.style('cursor', 'pointer');         // pointer on hover
+  helpButton.style('box-shadow', 'none');        // remove any shadow
+  helpButton.style('line-height', '1');          // tighten up vertical centering
+  helpButton.mousePressed(() => {
+    showHelp = !showHelp;
+  });
 }
 
 function draw() {
@@ -88,6 +105,53 @@ function draw() {
     fill(0);
     screen.display();
   pop();
+
+  if (showHelp) {
+    let boxW = 410, boxH = 420;
+    let boxX = width - boxW - 80;
+    let boxY = 40;
+    let pad  = 10;
+    
+    push();
+      noStroke();
+      fill(0, 180);
+      rect(boxX, boxY, boxW, boxH, 8);
+    
+      fill(255);
+      textSize(16);
+      textLeading(20);               // controls line spacing
+      textAlign(LEFT, TOP);
+    
+      // tell text() to wrap at boxW - 2*pad
+      text(
+        "- Every time you press =, a new oscillator is added to the selected sound.\n" +
+        "- Clear calculator with C; Clear a sound with 2nd → C.\n" +
+        "- Use 2nd → any digit to select a different sound.\n" +
+        "- ▶︎ plays the current sound; ▶︎ in 2nd mode allows sounds assigned to digits to be played as keys.\n" +
+        "\n" +
+        "Fundamental - 1:1\n" +
+        "Major Second - 9:8\n" +
+        "Major Third - 5:4\n" +
+        "Perfect Fourth - 4:3\n" +
+        "Perfect Fifth - 3:2\n" +
+        "Major Sixth - 5:3\n" +
+        "Major Seventh - 15:8\n" +
+        "Octave - 2:1\n" +
+        "\n" +
+        "\n" +
+        "\n" +
+        "\n" +
+        "\n" +
+        "\n",
+
+        boxX + pad,
+        boxY + pad,
+        boxW - pad * 2,              // max text width
+        boxH - pad * 2               // (optional) max text height
+      );
+    pop();
+    
+  }
 }
 
 function dotGrid() {
@@ -318,4 +382,5 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   calcX = (windowWidth - calcWidth) / 2;
   calcY = (windowHeight - calcHeight) / 2;
+  helpButton.position(windowWidth - 50, 10);
 }
