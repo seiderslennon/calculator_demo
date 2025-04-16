@@ -107,7 +107,7 @@ function draw() {
   pop();
 
   if (showHelp) {
-    let boxW = 410, boxH = 420;
+    let boxW = 410, boxH = 360;
     let boxX = width - boxW - 80;
     let boxY = 40;
     let pad  = 10;
@@ -138,7 +138,7 @@ function draw() {
         "Major Seventh - 15:8\n" +
         "Octave - 2:1\n" +
         "\n" +
-        "\n" +
+        "Acoustic Beat Frequency = f₁ - f₂\n" +
         "\n" +
         "\n" +
         "\n" +
