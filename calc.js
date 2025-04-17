@@ -108,9 +108,6 @@ function draw() {
     for (let btn of buttons) {
       btn.display();
     }
-    
-
-    
     // button text color
     fill(0);
     screen.display();
@@ -126,6 +123,14 @@ function draw() {
   updateButtonColor("+", [85, 85, 85]);
   updateButtonColor(".", [85, 85, 85]);
   updateButtonColor("=", [85, 85, 85]);
+
+  if (playAllMode) {
+    // active colour
+    updateButtonColor("▶︎", [110, 30, 20]);
+  } else {
+    // default colour
+    updateButtonColor("▶︎", [150, 46, 33]);
+  }
 
   if (showHelp) {
     let boxW = 410, boxH = 360;
@@ -192,18 +197,11 @@ function playCallback() {
   if (second) {
     playAllMode = true;
     second = false;
-    for (let btn of buttons) {
-      if (btn.label === "▶︎") {
-        btn.updateColor(activeButtonColor);
-      }
-    }
-  } else {
+    // updateButtonColor("▶︎", [255, 255, 255]);
+  } 
+  else {
     playAllMode = false;
-    for (let btn of buttons) {
-      if (btn.label === "▶︎") {
-        btn.updateColor(defaultButtonColor);
-      }
-    }
+    // updateButtonColor("▶︎", [140, 46, 33]);
     sounds[targetSound].playAll();
     isPlayActive = true;
   }
@@ -218,11 +216,7 @@ function secondCallback() {
   second = !second;
   if (playAllMode) { second = false; }
   playAllMode = false;
-  for (let btn of buttons) {
-    if (btn.label === "▶︎") {
-      btn.updateColor(defaultButtonColor);
-    }
-  }
+  // updateButtonColor("▶︎", [140, 46, 33]);
 }
 
 function clearCallback() {
