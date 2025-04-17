@@ -12,8 +12,8 @@ let screen;
 let second = false;
 let isPlayActive = false;
 let playAllMode = false;
-let defaultButtonColor = 200;
-let activeButtonColor = 165;
+let defaultButtonColor = [185, 185, 130];
+let activeButtonColor = [150, 140, 88];
 let targetSound = 0;
 let sounds = [];
 
@@ -92,19 +92,35 @@ function draw() {
     translate(calcX, calcY);
     
     noStroke();
-    fill(255, 80, 80);
+    // calculator color
+    fill(40, 40, 40);
     rect(0, 0, calcWidth, calcHeight);
     
-    fill(255, 255, 230);
+    // Screen color
+    fill(205, 210, 200);
     rect(15, 15, 345, 130);
     
     for (let btn of buttons) {
       btn.display();
     }
     
+
+    
+    // button text color
     fill(0);
     screen.display();
   pop();
+
+  updateButtonColor("2nd", [50, 85, 60]);
+  updateButtonColor("C", [50, 85, 60]);
+  updateButtonColor("sin", [50, 85, 60]);
+  updateButtonColor("▶︎", [140, 46, 33]);
+  updateButtonColor("/", [65, 65, 65]);
+  updateButtonColor("*", [65, 65, 65]);
+  updateButtonColor("-", [65, 65, 65]);
+  updateButtonColor("+", [65, 65, 65]);
+  updateButtonColor(".", [65, 65, 65]);
+  updateButtonColor("=", [65, 65, 65]);
 
   if (showHelp) {
     let boxW = 410, boxH = 360;
@@ -374,6 +390,14 @@ function keyPressed() {
   for (let btn of buttons) {
     if (activeKey === btn.label) {
       btn.activate();
+    }
+  }
+}
+
+function updateButtonColor(label, color) {
+  for (let btn of buttons) {
+    if (btn.label === label) {
+      btn.updateColor(color);
     }
   }
 }

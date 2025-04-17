@@ -6,7 +6,7 @@ class Button {
     this.size = size;
     this.label = label;
     this.callback = callback; // Optional callback function
-    this.buttonColor = 200;   // Default button color
+    this.buttonColor = [185, 185, 130];   // Default button color
   }
   
   display() {
@@ -16,7 +16,7 @@ class Button {
     
     this.p.fill(0);
     this.p.textAlign(this.p.CENTER, this.p.CENTER);
-    this.p.textSize(20);
+    this.p.textSize(28);
     this.p.text(this.label, this.x, this.y);
   }
   
