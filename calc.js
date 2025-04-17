@@ -93,12 +93,17 @@ function draw() {
     
     noStroke();
     // calculator color
-    fill(40, 40, 40);
+    stroke(0);            // black stroke
+    strokeWeight(1.2); 
+    fill(225, 225, 225);
     rect(0, 0, calcWidth, calcHeight);
-    
+    noStroke();
     // Screen color
-    fill(205, 210, 200);
+    stroke(0);            // black stroke
+    strokeWeight(1.2); 
+    fill(148, 155, 94);
     rect(15, 15, 345, 130);
+    noStroke();
     
     for (let btn of buttons) {
       btn.display();
@@ -115,12 +120,12 @@ function draw() {
   updateButtonColor("C", [50, 85, 60]);
   updateButtonColor("sin", [50, 85, 60]);
   updateButtonColor("▶︎", [140, 46, 33]);
-  updateButtonColor("/", [65, 65, 65]);
-  updateButtonColor("*", [65, 65, 65]);
-  updateButtonColor("-", [65, 65, 65]);
-  updateButtonColor("+", [65, 65, 65]);
-  updateButtonColor(".", [65, 65, 65]);
-  updateButtonColor("=", [65, 65, 65]);
+  updateButtonColor("/", [85, 85, 85]);
+  updateButtonColor("*", [85, 85, 85]);
+  updateButtonColor("-", [85, 85, 85]);
+  updateButtonColor("+", [85, 85, 85]);
+  updateButtonColor(".", [85, 85, 85]);
+  updateButtonColor("=", [85, 85, 85]);
 
   if (showHelp) {
     let boxW = 410, boxH = 360;
