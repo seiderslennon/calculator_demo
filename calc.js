@@ -16,6 +16,8 @@ let defaultButtonColor = [185, 185, 130];
 let activeButtonColor = [150, 140, 88];
 let targetSound = 0;
 let sounds = [];
+let waveType = 0;
+let wave = 'sine';
 
 let showHelp = false;
 let helpButton;
@@ -42,7 +44,7 @@ function setup() {
   let col3 = 4 * marginX + ((7 * buttonSize) / 2);
   
   buttons.push(new Button(this, col0, row0, buttonSize, "2nd", secondCallback));
-  buttons.push(new Button(this, col1, row0, buttonSize, "sin", playCallback));
+  buttons.push(new Button(this, col1, row0, buttonSize, "Sin", sinCallback));
   buttons.push(new Button(this, col2, row0, buttonSize, "C", clearCallback));
   buttons.push(new Button(this, col3, row0, buttonSize, "▶︎", playCallback));
   
@@ -66,7 +68,7 @@ function setup() {
   buttons.push(new Button(this, col2, row4, buttonSize, "=", equalsCallback));
   buttons.push(new Button(this, col3, row4, buttonSize, "+", plusCallback));
   
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < 10; i++) {
     sounds.push(new Sound());
   }
 
@@ -115,7 +117,7 @@ function draw() {
 
   updateButtonColor("2nd", [50, 85, 60]);
   updateButtonColor("C", [50, 85, 60]);
-  updateButtonColor("sin", [50, 85, 60]);
+  updateButtonColor("Sin", [50, 85, 60]);
   updateButtonColor("▶︎", [140, 46, 33]);
   updateButtonColor("/", [85, 85, 85]);
   updateButtonColor("*", [85, 85, 85]);
@@ -133,7 +135,7 @@ function draw() {
   }
 
   if (showHelp) {
-    let boxW = 410, boxH = 360;
+    let boxW = 410, boxH = 380;
     let boxX = width - boxW - 80;
     let boxY = 40;
     let pad  = 10;
@@ -154,6 +156,7 @@ function draw() {
         "- Clear calculator with C; Clear a sound with 2nd → C.\n" +
         "- Use 2nd → any digit to select a different sound.\n" +
         "- ▶︎ plays the current sound; ▶︎ in 2nd mode allows sounds assigned to digits to be played as keys.\n" +
+        "- 'Sin' button toggles through wave shapes.\n" +
         "\n" +
         "Fundamental - 1:1\n" +
         "Major Second - 9:8\n" +
@@ -197,11 +200,9 @@ function playCallback() {
   if (second) {
     playAllMode = true;
     second = false;
-    // updateButtonColor("▶︎", [255, 255, 255]);
   } 
   else {
     playAllMode = false;
-    // updateButtonColor("▶︎", [140, 46, 33]);
     sounds[targetSound].playAll();
     isPlayActive = true;
   }
@@ -209,14 +210,13 @@ function playCallback() {
 
 function equalsCallback() {
   let result = screen.evaluate();
-  sounds[targetSound].addOscillator(result);
+  sounds[targetSound].addOscillator(result, wave);
 }
 
 function secondCallback() {
   second = !second;
   if (playAllMode) { second = false; }
   playAllMode = false;
-  // updateButtonColor("▶︎", [140, 46, 33]);
 }
 
 function clearCallback() {
@@ -242,95 +242,121 @@ function divideCallback() {
 function decimalCallback() {
   screen.text += ".";
 }
-function zeroCallback() {
-  screen.text += "0";
+function sinCallback() {
+  waveType += 1;
+  if (waveType % 4 === 0) {
+    wave = 'sine';
+    updateButtonText("Sqr", "Sin");
+  }
+  else if (waveType % 4 === 1) {
+    wave = 'triangle';
+    updateButtonText("Sin", "Tri");
+  }
+  else if (waveType % 4 === 2) {
+    wave = 'sawtooth';
+    updateButtonText("Tri", "Saw");
+  }
+  else if (waveType % 4 === 3) {
+    wave = 'square';
+    updateButtonText("Saw", "Sqr");
+  }
 }
-function oneCallback() {
+function zeroCallback() {
   if (second) {
     targetSound = 0;
     second = false;
   } else if (playAllMode) {
     sounds[0].playAll();
   } else { 
-    screen.text += "1"; 
+    screen.text += "0"; 
   }
 }
-function twoCallback() {
+function oneCallback() {
   if (second) {
     targetSound = 1;
     second = false;
   } else if (playAllMode) {
     sounds[1].playAll();
   } else { 
-    screen.text += "2"; 
+    screen.text += "1"; 
   }
 }
-function threeCallback() {
+function twoCallback() {
   if (second) {
     targetSound = 2;
     second = false;
   } else if (playAllMode) {
     sounds[2].playAll();
   } else { 
-    screen.text += "3"; 
+    screen.text += "2"; 
   }
 }
-function fourCallback() {
+function threeCallback() {
   if (second) {
     targetSound = 3;
     second = false;
   } else if (playAllMode) {
     sounds[3].playAll();
   } else { 
-    screen.text += "4"; 
+    screen.text += "3"; 
   }
 }
-function fiveCallback() {
+function fourCallback() {
   if (second) {
     targetSound = 4;
     second = false;
   } else if (playAllMode) {
     sounds[4].playAll();
   } else { 
-    screen.text += "5"; 
+    screen.text += "4"; 
   }
 }
-function sixCallback() {
+function fiveCallback() {
   if (second) {
     targetSound = 5;
     second = false;
   } else if (playAllMode) {
     sounds[5].playAll();
   } else { 
-    screen.text += "6"; 
+    screen.text += "5"; 
   }
 }
-function sevenCallback() {
+function sixCallback() {
   if (second) {
     targetSound = 6;
     second = false;
   } else if (playAllMode) {
     sounds[6].playAll();
   } else { 
-    screen.text += "7"; 
+    screen.text += "6"; 
   }
 }
-function eightCallback() {
+function sevenCallback() {
   if (second) {
     targetSound = 7;
     second = false;
   } else if (playAllMode) {
     sounds[7].playAll();
   } else { 
-    screen.text += "8"; 
+    screen.text += "7"; 
   }
 }
-function nineCallback() {
+function eightCallback() {
   if (second) {
     targetSound = 8;
     second = false;
   } else if (playAllMode) {
     sounds[8].playAll();
+  } else { 
+    screen.text += "8"; 
+  }
+}
+function nineCallback() {
+  if (second) {
+    targetSound = 9;
+    second = false;
+  } else if (playAllMode) {
+    sounds[9].playAll();
   } else { 
     screen.text += "9"; 
   }
@@ -358,8 +384,8 @@ function mouseReleased() {
     let localX = mouseX - calcX;
     let localY = mouseY - calcY;
     for (let btn of buttons) {
-      if (btn.isMouseInside(localX, localY)) {
-        sounds[Number(btn.label) - 1].stopAll();
+      if (btn.isMouseInside(localX, localY) && btn.label >= 0 && btn.label < 10) {
+        sounds[Number(btn.label)].stopAll();
       }
     }
   }
@@ -371,8 +397,8 @@ function keyReleased() {
     isPlayActive = false;
   }
   if (playAllMode) {
-    if (key > 0 && key < 10) {
-      sounds[Number(key) - 1].stopAll();
+    if (key >= 0 && key < 10) {
+      sounds[Number(key)].stopAll();
     }
   }
 }
@@ -397,6 +423,14 @@ function updateButtonColor(label, color) {
   for (let btn of buttons) {
     if (btn.label === label) {
       btn.updateColor(color);
+    }
+  }
+}
+
+function updateButtonText(label, newLabel) {
+  for (let btn of buttons) {
+    if (btn.label === label) {
+      btn.label = newLabel;
     }
   }
 }

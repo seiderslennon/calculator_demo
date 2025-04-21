@@ -85,9 +85,8 @@ class Sound {
     this.env.setADSR(0.015, 1, 1, 0.01);
   }
   
-  addOscillator(freq) {
-    let osc = new p5.Oscillator('sine');
-    osc.freq(freq);
+  addOscillator(freq, waveType) {
+    let osc = new p5.Oscillator(freq, waveType);
     osc.amp(0);
     osc.start();
     this.oscillators.push(osc);
